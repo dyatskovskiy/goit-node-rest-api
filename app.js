@@ -1,13 +1,15 @@
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-const contactsRouter = require("./routes/contactsRouter.js");
-require("dotenv").config();
+import express, { json } from "express";
+import morgan from "morgan";
+import cors from "cors";
+import "dotenv/config";
+
+import contactsRouter from "./routes/contactsRouter.js";
+
 const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
-app.use(express.json());
+app.use(json());
 
 app.use("/api/contacts", contactsRouter);
 
@@ -20,4 +22,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-module.exports = app;
+export default app;
