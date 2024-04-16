@@ -1,4 +1,5 @@
 import { HttpError } from "../helpers/HttpError.js";
+
 import Contact from "../models/contact.js";
 
 export const listContactsService = async () => {
@@ -20,8 +21,6 @@ export const createContactService = async (data) => {
 
 export const deleteContactService = async (id) => {
   const contact = await Contact.findByIdAndDelete(id);
-
-  return contact;
 };
 
 export const updateContactService = async (id, data) => {
