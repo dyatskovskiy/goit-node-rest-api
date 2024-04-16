@@ -5,36 +5,22 @@ import { catchAsync } from "../helpers/catchAsync.js";
 import {
   createContactService,
   deleteContactService,
-  getContactsService,
-  getOneContactService,
+  listContactsService,
   updateContactService,
   updateStatusService,
 } from "../services/contactService.js";
 
 export const listContacts = catchAsync(async (req, res) => {
-  const result = await getContactsService();
+  const result = await listContactsService();
 
   res.status(200).json(result);
 });
 
-export const getOneContact = catchAsync(async (req, res) => {
-  const result = await getOneContactService(req.params.id);
+export const getOneContact = (req, res) => {
+  const { contact } = req;
 
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-
-  res.status(200).json(result);
-});
-
-export const deleteContact = catchAsync(async (req, res) => {
-  const result = await deleteContactService(req.params.id);
-
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
-  res.status(200).json(result);
-});
+  res.status(200).json(contact);
+};
 
 export const createContact = catchAsync(async (req, res) => {
   const result = await createContactService(req.body);
@@ -42,24 +28,28 @@ export const createContact = catchAsync(async (req, res) => {
   res.status(201).json({ code: 201, data: result });
 });
 
-export const updateContact = catchAsync(async (req, res) => {
-  const result = await updateContactService(req.params.id, req.body);
+export const deleteContact = catchAsync(async (req, res) => {
+  const { contact } = req;
 
-  if (!result) {
-    throw HttpError(404, "Not found");
-  }
+  await deleteContactService(contact.id);
+
+  res.status(200).json(contact);
+});
+
+export const updateContact = catchAsync(async (req, res) => {
+  const { contact } = req;
+
+  const result = await updateContactService(contact.id, req.body);
 
   res.status(200).json(result);
 });
 
 export const updateStatusContact = catchAsync(async (req, res) => {
-  const result = await updateStatusService(req.params.id, {
+  const { contact } = req;
+
+  const result = await updateStatusService(contact.id, {
     favorite: req.body.favorite,
   });
-
-  if (!result) {
-    throw HttpError(404);
-  }
 
   res.status(200).json(result);
 });

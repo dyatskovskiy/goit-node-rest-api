@@ -1,12 +1,12 @@
 import { HttpError } from "../helpers/HttpError.js";
 import Contact from "../models/contact.js";
 
-export const getContactsService = async () => {
+export const listContactsService = async () => {
   const contacts = await Contact.find();
   return contacts;
 };
 
-export const getOneContactService = async (id) => {
+export const getContactByIdService = async (id) => {
   const contact = await Contact.findById(id);
 
   return contact;

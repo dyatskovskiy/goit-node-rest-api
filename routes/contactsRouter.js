@@ -17,20 +17,28 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
+import { checkContactInDatabase } from "../middlewares/contactMiddlewares.js";
+
 const contactsRouter = Router();
 
 contactsRouter.get("/", listContacts);
 
-contactsRouter.get("/:id", getOneContact);
+contactsRouter.get("/:id", checkContactInDatabase, getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete("/:id", checkContactInDatabase, deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
-contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
+contactsRouter.put(
+  "/:id",
+  checkContactInDatabase,
+  validateBody(updateContactSchema),
+  updateContact
+);
 
 contactsRouter.patch(
   "/:id/favorite",
+  checkContactInDatabase,
   validateBody(updateStatusSchema),
   updateStatusContact
 );
