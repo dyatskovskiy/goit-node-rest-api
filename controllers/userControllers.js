@@ -25,3 +25,13 @@ export const logOutUserController = catchAsync(async (req, res, next) => {
 
   res.sendStatus(204);
 });
+
+export const getCurrentUserController = (req, res) => {
+  const user = req.user.toObject();
+
+  user.password = undefined;
+  user.token = undefined;
+  user._id = undefined;
+
+  res.status(200).json(user);
+};

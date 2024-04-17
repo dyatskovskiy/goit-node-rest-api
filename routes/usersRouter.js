@@ -10,6 +10,7 @@ import { userDataValidator } from "../middlewares/userValidators.js";
 import { userSchema } from "../schemas/usersSchemas.js";
 
 import {
+  getCurrentUserController,
   logInUserController,
   logOutUserController,
   signUpUserController,
@@ -28,4 +29,9 @@ usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
 
 usersRouter.post("/logout", protectContactsMiddleware, logOutUserController);
 
+usersRouter.get(
+  "/current",
+  protectContactsMiddleware,
+  getCurrentUserController
+);
 export default usersRouter;

@@ -23,7 +23,7 @@ const userSchema = new Schema(
       default: null,
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: false }
 );
 
 const User = model("user", userSchema);

@@ -21,7 +21,7 @@ const contactSchema = new Schema(
       ref: "user",
     },
   },
-  { versionKey: false }
+  { versionKey: false, timestamps: false }
 );
 
 const Contact = model("contact", contactSchema);
