@@ -1,6 +1,9 @@
 import { Router } from "express";
 
-import { isEmailExistsMiddleware } from "../middlewares/userMiddlewares.js";
+import {
+  isEmailExistsMiddleware,
+  protectContactsMiddleware,
+} from "../middlewares/userMiddlewares.js";
 
 import { userDataValidator } from "../middlewares/userValidators.js";
 
@@ -8,6 +11,7 @@ import { userSchema } from "../schemas/usersSchemas.js";
 
 import {
   logInUserController,
+  logOutUserController,
   signUpUserController,
 } from "../controllers/userControllers.js";
 
@@ -21,5 +25,7 @@ usersRouter.post(
 );
 
 usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
+
+usersRouter.post("/logout", protectContactsMiddleware, logOutUserController);
 
 export default usersRouter;

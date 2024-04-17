@@ -31,7 +31,7 @@ export const signUpUserService = async (data) => {
   return userObject;
 };
 
-export const loginUserService = async ({ email, password }) => {
+export const logInUserService = async ({ email, password }) => {
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -56,4 +56,9 @@ export const loginUserService = async ({ email, password }) => {
   userObject.token = undefined;
 
   return { userObject, token };
+};
+
+export const logOutUserService = async (user) => {
+  user.token = null;
+  await user.save();
 };
