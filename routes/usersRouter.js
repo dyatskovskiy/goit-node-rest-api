@@ -1,18 +1,25 @@
 import { Router } from "express";
-import { isEmailExists } from "../middlewares/userMiddlewares.js";
-import { signUpUserValidator } from "../middlewares/userValidators.js";
-import { signUpUserSchema } from "../schemas/usersSchemas.js";
-import { signUpUserController } from "../controllers/userControllers.js";
+
+import { isEmailExistsMiddleware } from "../middlewares/userMiddlewares.js";
+
+import { userDataValidator } from "../middlewares/userValidators.js";
+
+import { userSchema } from "../schemas/usersSchemas.js";
+
+import {
+  logInUserController,
+  signUpUserController,
+} from "../controllers/userControllers.js";
 
 const usersRouter = Router();
 
 usersRouter.post(
   "/register",
-  signUpUserValidator(signUpUserSchema),
-  isEmailExists,
+  userDataValidator(userSchema),
+  isEmailExistsMiddleware,
   signUpUserController
 );
 
-usersRouter.post("/login");
+usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
 
 export default usersRouter;

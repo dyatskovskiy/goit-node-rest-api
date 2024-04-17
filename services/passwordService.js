@@ -10,7 +10,7 @@ export const hashPassword = async (creds) => {
   return hash;
 };
 
-export const isPasswordValid = async (candidate, hash) => {
+export const validatePassword = async (candidate, hash) => {
   const isValid = await bcrypt.compare(candidate, hash);
 
   return isValid;

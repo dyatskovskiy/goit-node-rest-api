@@ -1,6 +1,6 @@
 import { HttpError } from "../helpers/HttpError.js";
 
-export const signUpUserValidator = (schema) => {
+export const userDataValidator = (schema) => {
   const fn = (req, res, next) => {
     const { email, password } = req.body;
     if (!email || !password) {
