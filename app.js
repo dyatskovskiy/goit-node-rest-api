@@ -4,6 +4,7 @@ import cors from "cors";
 import "dotenv/config";
 
 import contactsRouter from "./routes/contactsRouter.js";
+import usersRouter from "./routes/usersRouter.js";
 
 const app = express();
 
@@ -12,9 +13,10 @@ app.use(cors());
 app.use(json());
 
 app.use("/api/contacts", contactsRouter);
+app.use("/api/users", usersRouter);
 
-app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
+app.all("*", (req, res) => {
+  res.status(404).json({ message: "Resource not found!" });
 });
 
 app.use((err, req, res, next) => {
