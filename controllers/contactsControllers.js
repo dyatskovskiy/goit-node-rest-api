@@ -23,7 +23,7 @@ export const getOneContact = (req, res) => {
 export const createContact = catchAsync(async (req, res) => {
   const result = await createContactService(req.body);
 
-  res.status(201).json({ code: 201, data: result });
+  res.status(201).json(result);
 });
 
 export const deleteContact = catchAsync(async (req, res) => {

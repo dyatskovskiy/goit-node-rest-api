@@ -6,7 +6,13 @@ import { signToken } from "./jwtService.js";
 
 import { hashPassword, validatePassword } from "./passwordService.js";
 
-export const findUserByEmailService = async (email) => {
+export const getUserByIdService = async (id) => {
+  const user = await User.findById(id);
+
+  return user;
+};
+
+export const getUserByEmailService = async (email) => {
   const user = await User.findOne({ email });
   return user;
 };

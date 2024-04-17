@@ -19,18 +19,36 @@ import {
 
 import { checkContactInDatabase } from "../middlewares/contactMiddlewares.js";
 
+import { protectContactsMiddleware } from "../middlewares/userMiddlewares.js";
+
 const contactsRouter = Router();
 
-contactsRouter.get("/", listContacts);
+contactsRouter.get("/", protectContactsMiddleware, listContacts);
 
-contactsRouter.get("/:id", checkContactInDatabase, getOneContact);
+contactsRouter.get(
+  "/:id",
+  protectContactsMiddleware,
+  checkContactInDatabase,
+  getOneContact
+);
 
-contactsRouter.delete("/:id", checkContactInDatabase, deleteContact);
+contactsRouter.delete(
+  "/:id",
+  protectContactsMiddleware,
+  checkContactInDatabase,
+  deleteContact
+);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post(
+  "/",
+  protectContactsMiddleware,
+  validateBody(createContactSchema),
+  createContact
+);
 
 contactsRouter.put(
   "/:id",
+  protectContactsMiddleware,
   checkContactInDatabase,
   validateBody(updateContactSchema),
   updateContact
@@ -38,6 +56,7 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
+  protectContactsMiddleware,
   checkContactInDatabase,
   validateBody(updateStatusSchema),
   updateStatusContact
