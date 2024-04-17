@@ -8,7 +8,11 @@ export const findUserByEmail = async (email) => {
 export const signUpUserService = async (credentials) => {
   const newUser = await User.create(credentials);
 
-  newUser.password = undefined;
+  const userObject = newUser.toObject();
 
-  return newUser;
+  userObject.password = undefined;
+  userObject.token = undefined;
+  userObject._id = undefined;
+
+  return userObject;
 };
