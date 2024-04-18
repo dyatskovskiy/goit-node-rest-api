@@ -11,27 +11,30 @@ export const createContactService = async (data, owner) => {
   return newContact;
 };
 
-export const filterContactsByFavStatusService = async (currentUser, query) => {
-  const findOptions = query.favorite;
-
-  const contacts = await Contact.find({
-    owner: currentUser.id,
-    favorite: findOptions,
-  });
-
-  return contacts;
-};
-
 export const listContactsService = async (currentUser, query) => {
-  // if query exists - filter contacts by favorite status, else - standart query without filters
-
-  const contacts = query.favorite
-    ? filterContactsByFavStatusService(currentUser, query)
-    : await Contact.find({
+  // if query exists - filter contacts by favorite status, else - standart search without filters
+  const findOptions = query.favorite
+    ? { owner: currentUser.id, favorite: query.favorite }
+    : {
         owner: currentUser.id,
-      });
+      };
 
-  return contacts;
+  const createdContactsQuery = Contact.find(findOptions);
+
+  // pagination
+  const page = query.page ? +query.page : 1;
+  const limit = query.limit ? +query.limit : 20;
+  const docsToSkip = (page - 1) * limit;
+
+  createdContactsQuery.skip(docsToSkip).limit(limit);
+
+  const contacts = await createdContactsQuery;
+
+  const totalResults = await Contact.countDocuments(findOptions);
+
+  console.log(contacts, "=====", totalResults);
+
+  return { contacts, totalResults };
 };
 
 export const getContactByIdService = async (id) => {
