@@ -23,32 +23,34 @@ import { protectContactsMiddleware } from "../middlewares/userMiddlewares.js";
 
 const contactsRouter = Router();
 
-contactsRouter.get("/", protectContactsMiddleware, listContacts);
+contactsRouter.use(protectContactsMiddleware);
+
+contactsRouter.get("/", listContacts);
 
 contactsRouter.get(
   "/:id",
-  protectContactsMiddleware,
+
   checkContactInDatabase,
   getOneContact
 );
 
 contactsRouter.delete(
   "/:id",
-  protectContactsMiddleware,
+
   checkContactInDatabase,
   deleteContact
 );
 
 contactsRouter.post(
   "/",
-  protectContactsMiddleware,
+
   validateBody(createContactSchema),
   createContact
 );
 
 contactsRouter.put(
   "/:id",
-  protectContactsMiddleware,
+
   checkContactInDatabase,
   validateBody(updateContactSchema),
   updateContact
@@ -56,7 +58,7 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
-  protectContactsMiddleware,
+
   checkContactInDatabase,
   validateBody(updateStatusSchema),
   updateStatusContact

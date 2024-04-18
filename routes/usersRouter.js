@@ -27,11 +27,14 @@ usersRouter.post(
 
 usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
 
-usersRouter.post("/logout", protectContactsMiddleware, logOutUserController);
+usersRouter.use(protectContactsMiddleware);
+
+usersRouter.post("/logout", logOutUserController);
 
 usersRouter.get(
   "/current",
-  protectContactsMiddleware,
+
   getCurrentUserController
 );
+
 export default usersRouter;
