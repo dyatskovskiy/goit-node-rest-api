@@ -15,9 +15,9 @@ export const createContact = catchAsync(async (req, res) => {
 });
 
 export const listContacts = catchAsync(async (req, res) => {
-  const result = await listContactsService(req.user);
+  const result = await listContactsService(req.user, req.query);
 
-  res.status(200).json(result);
+  res.status(200).json({ quantity: result.length, contacts: result });
 });
 
 export const getOneContact = (req, res) => {

@@ -11,8 +11,25 @@ export const createContactService = async (data, owner) => {
   return newContact;
 };
 
-export const listContactsService = async (currentUser) => {
-  const contacts = await Contact.find({ owner: currentUser.id });
+export const filterContactsByFavStatusService = async (currentUser, query) => {
+  const findOptions = query.favorite;
+
+  const contacts = await Contact.find({
+    owner: currentUser.id,
+    favorite: findOptions,
+  });
+
+  return contacts;
+};
+
+export const listContactsService = async (currentUser, query) => {
+  // if query exists - filter contacts by favorite status, else - standart query without filters
+
+  const contacts = query.favorite
+    ? filterContactsByFavStatusService(currentUser, query)
+    : await Contact.find({
+        owner: currentUser.id,
+      });
 
   return contacts;
 };
