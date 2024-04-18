@@ -2,18 +2,25 @@ import { Router } from "express";
 
 import {
   isEmailExistsMiddleware,
-  protectContactsMiddleware,
+  protectPrivateRoutesMiddleware,
 } from "../middlewares/userMiddlewares.js";
 
-import { userDataValidator } from "../middlewares/userValidators.js";
+import {
+  updateSubscriptionValidator,
+  userDataValidator,
+} from "../middlewares/userValidators.js";
 
-import { userSchema } from "../schemas/usersSchemas.js";
+import {
+  subscriptionUpdateSchema,
+  userSchema,
+} from "../schemas/usersSchemas.js";
 
 import {
   getCurrentUserController,
   logInUserController,
   logOutUserController,
   signUpUserController,
+  updatSubscriptionController,
 } from "../controllers/userControllers.js";
 
 const usersRouter = Router();
@@ -27,14 +34,16 @@ usersRouter.post(
 
 usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
 
-usersRouter.use(protectContactsMiddleware);
+usersRouter.use(protectPrivateRoutesMiddleware);
+
+usersRouter.get("/current", getCurrentUserController);
 
 usersRouter.post("/logout", logOutUserController);
 
-usersRouter.get(
-  "/current",
-
-  getCurrentUserController
+usersRouter.patch(
+  "/subscription",
+  updateSubscriptionValidator(subscriptionUpdateSchema),
+  updatSubscriptionController
 );
 
 export default usersRouter;

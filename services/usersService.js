@@ -62,3 +62,16 @@ export const logOutUserService = async (user) => {
   user.token = null;
   await user.save();
 };
+
+export const updateSubscriptionService = async (user, subscriptionType) => {
+  user.subscription = subscriptionType;
+
+  const updatedUser = await user.save();
+
+  const userObject = updatedUser.toObject();
+  userObject._id = undefined;
+  userObject.password = undefined;
+  userObject.token = undefined;
+
+  return userObject;
+};

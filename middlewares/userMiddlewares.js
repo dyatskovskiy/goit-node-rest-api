@@ -21,20 +21,22 @@ export const isEmailExistsMiddleware = catchAsync(async (req, res, next) => {
   next();
 });
 
-export const protectContactsMiddleware = catchAsync(async (req, res, next) => {
-  const token =
-    req.headers.authorization?.startsWith("Bearer") &&
-    req.headers.authorization.split(" ")[1];
+export const protectPrivateRoutesMiddleware = catchAsync(
+  async (req, res, next) => {
+    const token =
+      req.headers.authorization?.startsWith("Bearer") &&
+      req.headers.authorization.split(" ")[1];
 
-  const userId = checkToken(token);
+    const userId = checkToken(token);
 
-  if (!userId) throw HttpError(401, "Unauthorized");
+    if (!userId) throw HttpError(401, "Unauthorized");
 
-  const currentUser = await getUserByIdService(userId);
+    const currentUser = await getUserByIdService(userId);
 
-  if (!currentUser) throw HttpError(401, "Unauthorized");
+    if (!currentUser) throw HttpError(401, "Unauthorized");
 
-  req.user = currentUser;
+    req.user = currentUser;
 
-  next();
-});
+    next();
+  }
+);

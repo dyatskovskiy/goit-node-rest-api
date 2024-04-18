@@ -22,11 +22,11 @@ import {
   checkContactOwner,
 } from "../middlewares/contactMiddlewares.js";
 
-import { protectContactsMiddleware } from "../middlewares/userMiddlewares.js";
+import { protectPrivateRoutesMiddleware } from "../middlewares/userMiddlewares.js";
 
 const contactsRouter = Router();
 
-contactsRouter.use(protectContactsMiddleware);
+contactsRouter.use(protectPrivateRoutesMiddleware);
 
 contactsRouter.use("/:id", checkContactInDatabase, checkContactOwner);
 

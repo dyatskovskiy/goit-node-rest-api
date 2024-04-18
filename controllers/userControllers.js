@@ -4,6 +4,7 @@ import {
   logInUserService,
   logOutUserService,
   signUpUserService,
+  updateSubscriptionService,
 } from "../services/usersService.js";
 
 export const signUpUserController = catchAsync(async (req, res) => {
@@ -18,7 +19,7 @@ export const logInUserController = catchAsync(async (req, res) => {
   res.status(200).json({ token: user.token, user: user.userObject });
 });
 
-export const logOutUserController = catchAsync(async (req, res, next) => {
+export const logOutUserController = catchAsync(async (req, res) => {
   await logOutUserService(req.user);
 
   res.sendStatus(204);
@@ -33,3 +34,12 @@ export const getCurrentUserController = (req, res) => {
 
   res.status(200).json(user);
 };
+
+export const updatSubscriptionController = catchAsync(async (req, res) => {
+  const updatedUser = await updateSubscriptionService(
+    req.user,
+    req.body.subscription
+  );
+
+  res.status(200).json(updatedUser);
+});
