@@ -15,8 +15,6 @@ export const signUpUserController = catchAsync(async (req, res) => {
 export const logInUserController = catchAsync(async (req, res) => {
   const user = await logInUserService(req.body);
 
-  console.log(user);
-
   res.status(200).json({ token: user.token, user: user.userObject });
 });
 

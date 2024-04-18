@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 export const hashPassword = async (creds) => {
-  const { password, ...restUserData } = creds;
+  const { password } = creds;
   const { SALT_ROUNDS } = process.env;
 
   const salt = await bcrypt.genSalt(+SALT_ROUNDS);

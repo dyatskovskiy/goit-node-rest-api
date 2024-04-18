@@ -2,8 +2,18 @@ import { HttpError } from "../helpers/HttpError.js";
 
 import Contact from "../models/contact.js";
 
-export const listContactsService = async () => {
-  const contacts = await Contact.find();
+export const createContactService = async (data, owner) => {
+  const newContact = await Contact.create({
+    ...data,
+    owner: owner.id,
+  });
+
+  return newContact;
+};
+
+export const listContactsService = async (currentUser) => {
+  const contacts = await Contact.find({ owner: currentUser.id });
+
   return contacts;
 };
 
@@ -11,12 +21,6 @@ export const getContactByIdService = async (id) => {
   const contact = await Contact.findById(id);
 
   return contact;
-};
-
-export const createContactService = async (data) => {
-  const newContact = await Contact.create(data);
-
-  return newContact;
 };
 
 export const deleteContactService = async (id) => {

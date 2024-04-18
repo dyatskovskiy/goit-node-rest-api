@@ -12,7 +12,7 @@ export const checkContactInDatabase = catchAsync(async (req, res, next) => {
     throw HttpError(400, "Not found");
   }
 
-  const contact = await getContactByIdService(id);
+  const contact = await getContactByIdService(id, req.user);
 
   if (!contact) {
     throw HttpError(400, "Not found");
@@ -22,3 +22,13 @@ export const checkContactInDatabase = catchAsync(async (req, res, next) => {
 
   next();
 });
+
+export const checkContactOwner = (req, res, next) => {
+  const { contact, user } = req;
+
+  if (contact.owner.toString() != user.id) {
+    throw HttpError(404, "Not found");
+  }
+
+  next();
+};

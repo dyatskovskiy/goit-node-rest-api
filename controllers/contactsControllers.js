@@ -8,8 +8,14 @@ import {
   updateStatusService,
 } from "../services/contactService.js";
 
+export const createContact = catchAsync(async (req, res) => {
+  const result = await createContactService(req.body, req.user);
+
+  res.status(201).json(result);
+});
+
 export const listContacts = catchAsync(async (req, res) => {
-  const result = await listContactsService();
+  const result = await listContactsService(req.user);
 
   res.status(200).json(result);
 });
@@ -19,12 +25,6 @@ export const getOneContact = (req, res) => {
 
   res.status(200).json(contact);
 };
-
-export const createContact = catchAsync(async (req, res) => {
-  const result = await createContactService(req.body);
-
-  res.status(201).json(result);
-});
 
 export const deleteContact = catchAsync(async (req, res) => {
   const { contact } = req;
