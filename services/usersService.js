@@ -59,6 +59,8 @@ export const logInUserService = async ({ email, password }) => {
 };
 
 export const logOutUserService = async (user) => {
+  if (!user.token) throw HttpError(401, "Unauthorized");
+
   user.token = null;
   await user.save();
 };
