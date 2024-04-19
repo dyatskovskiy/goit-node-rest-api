@@ -32,8 +32,6 @@ export const listContactsService = async (currentUser, query) => {
 
   const totalResults = await Contact.countDocuments(findOptions);
 
-  console.log(contacts, "=====", totalResults);
-
   return { contacts, totalResults };
 };
 
