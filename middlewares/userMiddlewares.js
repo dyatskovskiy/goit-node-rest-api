@@ -6,7 +6,7 @@ import { checkToken } from "../services/jwtService.js";
 
 import {
   getUserByEmailService,
-  getUserByIdService,
+  findUserService,
 } from "../services/usersService.js";
 
 export const isEmailExistsMiddleware = catchAsync(async (req, res, next) => {
@@ -31,9 +31,11 @@ export const protectPrivateRoutesMiddleware = catchAsync(
 
     if (!userId) throw HttpError(401, "Unauthorized");
 
-    const currentUser = await getUserByIdService(userId);
+    const currentUser = await findUserService(userId, token);
 
     if (!currentUser) throw HttpError(401, "Unauthorized");
+
+    currentUser.password = undefined;
 
     req.user = currentUser;
 

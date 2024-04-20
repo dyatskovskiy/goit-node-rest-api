@@ -6,8 +6,12 @@ import { signToken } from "./jwtService.js";
 
 import { hashPassword, validatePassword } from "./passwordService.js";
 
-export const getUserByIdService = async (id) => {
+export const findUserService = async (id, token) => {
   const user = await User.findById(id);
+
+  if (!user) throw HttpError(401);
+
+  if (token !== user.token) throw HttpError(401);
 
   return user;
 };
@@ -59,10 +63,9 @@ export const logInUserService = async ({ email, password }) => {
 };
 
 export const logOutUserService = async (user) => {
-  if (!user.token) throw HttpError(401, "Unauthorized");
+  if (!user.token) throw HttpError(401);
 
-  user.token = null;
-  await user.save();
+  await User.findByIdAndUpdate(user.id, { token: null }, { new: true });
 };
 
 export const updateSubscriptionService = async (user, subscriptionType) => {
