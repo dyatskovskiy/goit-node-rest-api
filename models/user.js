@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 
+import gravatar from "gravatar";
+
 const userSchema = new Schema(
   {
     password: {
@@ -18,6 +20,8 @@ const userSchema = new Schema(
       default: "starter",
     },
 
+    avatarURL: String,
+
     token: {
       type: String,
       default: null,
@@ -25,6 +29,18 @@ const userSchema = new Schema(
   },
   { versionKey: false, timestamps: false }
 );
+
+userSchema.pre("save", async function (next) {
+  if (this.isNew) {
+    this.avatarURL = gravatar.url(this.email, {
+      d: "retro",
+      s: "200",
+      protocol: "https",
+    });
+  }
+
+  next();
+});
 
 const User = model("user", userSchema);
 

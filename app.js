@@ -11,6 +11,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(json());
+app.use(express.static("public/avatars"));
 
 app.use("/api/contacts", contactsRouter);
 app.use("/api/users", usersRouter);
