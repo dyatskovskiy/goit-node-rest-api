@@ -4,6 +4,7 @@ import {
   logInUserService,
   logOutUserService,
   signUpUserService,
+  updateAvatarService,
   updateSubscriptionService,
 } from "../services/usersService.js";
 
@@ -35,11 +36,17 @@ export const getCurrentUserController = (req, res) => {
   res.status(200).json(user);
 };
 
-export const updatSubscriptionController = catchAsync(async (req, res) => {
+export const updateSubscriptionController = catchAsync(async (req, res) => {
   const updatedUser = await updateSubscriptionService(
     req.user,
     req.body.subscription
   );
 
   res.status(200).json(updatedUser);
+});
+
+export const updateAvatarController = catchAsync(async (req, res) => {
+  const updatedUser = await updateAvatarService(req.user, req.file);
+
+  res.status(200).json({ avatarUrl: updatedUser.avatarURL });
 });

@@ -8,6 +8,7 @@ import {
   getUserByEmailService,
   findUserService,
 } from "../services/usersService.js";
+import { ImageService } from "../services/imageService.js";
 
 export const isEmailExistsMiddleware = catchAsync(async (req, res, next) => {
   const { email } = req.body;
@@ -42,3 +43,6 @@ export const protectPrivateRoutesMiddleware = catchAsync(
     next();
   }
 );
+
+export const uploadAvatarMiddleware =
+  ImageService.initUpdloadImageMiddleware("avatar");

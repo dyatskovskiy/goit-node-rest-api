@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   isEmailExistsMiddleware,
   protectPrivateRoutesMiddleware,
+  uploadAvatarMiddleware,
 } from "../middlewares/userMiddlewares.js";
 
 import {
@@ -20,7 +21,8 @@ import {
   logInUserController,
   logOutUserController,
   signUpUserController,
-  updatSubscriptionController,
+  updateAvatarController,
+  updateSubscriptionController,
 } from "../controllers/userControllers.js";
 
 const usersRouter = Router();
@@ -34,6 +36,8 @@ usersRouter.post(
 
 usersRouter.post("/login", userDataValidator(userSchema), logInUserController);
 
+//private routes
+
 usersRouter.use(protectPrivateRoutesMiddleware);
 
 usersRouter.get("/current", getCurrentUserController);
@@ -43,7 +47,9 @@ usersRouter.post("/logout", logOutUserController);
 usersRouter.patch(
   "/subscription",
   updateSubscriptionValidator(subscriptionUpdateSchema),
-  updatSubscriptionController
+  updateSubscriptionController
 );
+
+usersRouter.patch("/avatars", uploadAvatarMiddleware, updateAvatarController);
 
 export default usersRouter;

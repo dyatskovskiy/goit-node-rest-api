@@ -1,3 +1,5 @@
+import path from "path";
+
 import { HttpError } from "../helpers/HttpError.js";
 
 import User from "../models/user.js";
@@ -5,6 +7,7 @@ import User from "../models/user.js";
 import { signToken } from "./jwtService.js";
 
 import { hashPassword, validatePassword } from "./passwordService.js";
+import { ImageService } from "./imageService.js";
 
 export const findUserService = async (id, token) => {
   const user = await User.findById(id);
@@ -79,4 +82,18 @@ export const updateSubscriptionService = async (user, subscriptionType) => {
   userObject.token = undefined;
 
   return userObject;
+};
+
+export const updateAvatarService = async (user, file) => {
+  if (!file) throw HttpError(400, "Please upload the image");
+
+  const avatarURL = await ImageService.saveImage(user);
+
+  const updatedUser = await User.findByIdAndUpdate(
+    user.id,
+    { avatarURL },
+    { new: true }
+  );
+
+  return updatedUser;
 };
