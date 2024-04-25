@@ -1,5 +1,3 @@
-import path from "path";
-
 import { HttpError } from "../helpers/HttpError.js";
 
 import User from "../models/user.js";
@@ -34,6 +32,7 @@ export const signUpUserService = async (data) => {
   userObject.password = undefined;
   userObject.token = undefined;
   userObject._id = undefined;
+  userObject.avatarURL = undefined;
 
   return userObject;
 };
@@ -61,6 +60,7 @@ export const logInUserService = async ({ email, password }) => {
   userObject.password = undefined;
   userObject._id = undefined;
   userObject.token = undefined;
+  userObject.avatarURL = undefined;
 
   return { userObject, token };
 };
@@ -72,14 +72,19 @@ export const logOutUserService = async (user) => {
 };
 
 export const updateSubscriptionService = async (user, subscriptionType) => {
-  user.subscription = subscriptionType;
-
-  const updatedUser = await user.save();
+  const updatedUser = await User.findByIdAndUpdate(
+    user.id,
+    {
+      subscription: subscriptionType,
+    },
+    { new: true }
+  );
 
   const userObject = updatedUser.toObject();
   userObject._id = undefined;
   userObject.password = undefined;
   userObject.token = undefined;
+  userObject.avatarURL = undefined;
 
   return userObject;
 };

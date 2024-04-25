@@ -32,6 +32,7 @@ export const getCurrentUserController = (req, res) => {
   user.password = undefined;
   user.token = undefined;
   user._id = undefined;
+  user.avatarURL = undefined;
 
   res.status(200).json(user);
 };
