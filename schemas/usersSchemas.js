@@ -8,3 +8,7 @@ export const userSchema = Joi.object({
 export const subscriptionUpdateSchema = Joi.object({
   subscription: Joi.string().valid("starter", "pro", "business").required(),
 });
+
+export const verificationResendingEmailSchema = Joi.object({
+  email: Joi.string().email(),
+});

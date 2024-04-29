@@ -6,6 +6,8 @@ import { signToken } from "./jwtService.js";
 
 import { hashPassword, validatePassword } from "./passwordService.js";
 import { ImageService } from "./imageService.js";
+import { v4 } from "uuid";
+import { EmailService } from "./emailService.js";
 
 export const findUserService = async (id, token) => {
   const user = await User.findById(id);
@@ -24,8 +26,23 @@ export const getUserByEmailService = async (email) => {
 
 export const signUpUserService = async (data) => {
   const hash = await hashPassword(data);
+  const verificationToken = v4();
+  const newUser = await User.create({
+    ...data,
+    password: hash,
+    verificationToken,
+  });
 
-  const newUser = await User.create({ ...data, password: hash });
+  const transporter = EmailService.createTransporter();
+
+  const emailConfig = EmailService.configureEmail(
+    data.email,
+    "Verification",
+    `<h2>Click the link below to verify your account</h2>
+    <a href='http://localhost:${process.env.PORT}/api/users/verify/${verificationToken}'>Verify</a>`
+  );
+
+  await EmailService.sendEmail(transporter, emailConfig);
 
   const userObject = newUser.toObject();
 
@@ -33,8 +50,49 @@ export const signUpUserService = async (data) => {
   userObject.token = undefined;
   userObject._id = undefined;
   userObject.avatarURL = undefined;
+  userObject.verificationToken = undefined;
+  userObject.verify = undefined;
 
   return userObject;
+};
+
+export const verificationUserService = async (verificationToken) => {
+  const user = await User.findOne({ verificationToken });
+
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  await User.findOneAndUpdate(
+    { verificationToken },
+    { verificationToken: null, verify: true }
+  );
+};
+
+export const verificationResendingEmailService = async (data) => {
+  const user = await getUserByEmailService(data.email);
+  if (!user) {
+    throw HttpError(404, "User not found");
+  }
+
+  if (user.verify) {
+    throw HttpError(400, "Verification has already been passed");
+  }
+  const { verificationToken } = user;
+
+  const transporter = EmailService.createTransporter();
+
+  const emailConfig = EmailService.configureEmail(
+    data.email,
+    "Verification",
+    `<h2>Click the link below to verify your account</h2>
+    <a href='http://localhost:${process.env.PORT}/api/users/verify/${verificationToken}'>Verify</a>`
+  );
+
+  await EmailService.sendEmail(transporter, emailConfig).catch((err) => {
+    console.log(err);
+    throw HttpError(err.responseCode, err.response);
+  });
 };
 
 export const logInUserService = async ({ email, password }) => {
@@ -50,17 +108,19 @@ export const logInUserService = async ({ email, password }) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
+  if (!user.verify) throw HttpError(403, "User not verified");
+
   const token = signToken(user.id);
 
-  user.token = token;
-
-  await user.save();
+  await User.findByIdAndUpdate(user.id, { token });
 
   const userObject = user.toObject();
   userObject.password = undefined;
   userObject._id = undefined;
   userObject.token = undefined;
   userObject.avatarURL = undefined;
+  userObject.verificationToken = undefined;
+  userObject.verify = undefined;
 
   return { userObject, token };
 };
@@ -85,6 +145,8 @@ export const updateSubscriptionService = async (user, subscriptionType) => {
   userObject.password = undefined;
   userObject.token = undefined;
   userObject.avatarURL = undefined;
+  userObject.verificationToken = undefined;
+  userObject.verify = undefined;
 
   return userObject;
 };

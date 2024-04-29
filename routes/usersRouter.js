@@ -9,11 +9,13 @@ import {
 import {
   updateSubscriptionValidator,
   userDataValidator,
+  verificationResendingEmailValidator,
 } from "../middlewares/userValidators.js";
 
 import {
   subscriptionUpdateSchema,
   userSchema,
+  verificationResendingEmailSchema,
 } from "../schemas/usersSchemas.js";
 
 import {
@@ -23,6 +25,8 @@ import {
   signUpUserController,
   updateAvatarController,
   updateSubscriptionController,
+  verificationResendingEmailController,
+  verificationUserController,
 } from "../controllers/userControllers.js";
 
 const usersRouter = Router();
@@ -32,6 +36,13 @@ usersRouter.post(
   userDataValidator(userSchema),
   isEmailExistsMiddleware,
   signUpUserController
+);
+
+usersRouter.get("/verify/:verificationToken", verificationUserController);
+usersRouter.post(
+  "/verify",
+  verificationResendingEmailValidator(verificationResendingEmailSchema),
+  verificationResendingEmailController
 );
 
 usersRouter.post("/login", userDataValidator(userSchema), logInUserController);

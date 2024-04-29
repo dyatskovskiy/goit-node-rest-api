@@ -36,3 +36,21 @@ export const updateSubscriptionValidator = (schema) => {
 
   return fn;
 };
+
+export const verificationResendingEmailValidator = (schema) => {
+  const fn = (req, res, next) => {
+    const { email } = req.body;
+
+    if (!email) {
+      throw HttpError(400, "Missing required field email");
+    }
+
+    const { error } = schema.validate(req.body);
+
+    if (error) throw HttpError(400, "Email is uncorrect");
+
+    next();
+  };
+
+  return fn;
+};
