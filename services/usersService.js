@@ -90,7 +90,6 @@ export const verificationResendingEmailService = async (data) => {
   );
 
   await EmailService.sendEmail(transporter, emailConfig).catch((err) => {
-    console.log(err);
     throw HttpError(err.responseCode, err.response);
   });
 };
